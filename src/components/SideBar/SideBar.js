@@ -32,6 +32,8 @@ const Suggestion = ({ isActive, suggestion }) => {
 
 const SideBar = () => {
     const [searchText, setSearchText] = useState("");
+    const [area, setArea] = useState(0);
+
     const { suggestions, isLoading } = useSuggestions(searchText);
 
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
@@ -41,7 +43,7 @@ const SideBar = () => {
         setActiveSuggestionIndex(0);
     };
 
-    const handleInputKeyDown = event => {
+    const handleSearchInputKeyDown = event => {
         const isSuggestionNavigationKey = ["ArrowDown", "ArrowUp", "Enter"].includes(event.key);
         if (isSuggestionNavigationKey) event.preventDefault();
     };
@@ -67,8 +69,14 @@ const SideBar = () => {
                 autoComplete="off"
                 className={styles.input}
                 placeholder={"Search a place"}
-                onKeyDown={handleInputKeyDown}
+                onKeyDown={handleSearchInputKeyDown}
                 onChange={handleSearchTextChange}
+            />
+            <input
+                type={"number"}
+                className={styles.input}
+                placeholder={"area in KM"}
+                onChange={event => setArea(event.target.value)}
             />
             {isLoading ? (
                 <div style={{ marginLeft: "16px" }}>Loading...</div>
