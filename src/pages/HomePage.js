@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
@@ -30,19 +30,19 @@ const DEFAULT_FILTERS = {
     searchRadius: 1,
 };
 
-function MultipleMarkers({ onMarkerClick }) {
-    return Locations.location.map(x => <Markers place={x} markerClick={onMarkerClick} />);
+function MultipleMarkers({ places, onMarkerClick }) {
+    return places.map(place => <SingleMarker place={place} onMarkerClick={onMarkerClick} />);
 }
 
-function Markers({ place, markerClick }) {
+function SingleMarker({ place, onMarkerClick }) {
     const eventHandlers = {
         click() {
-            markerClick(place);
+            onMarkerClick(place);
         },
     };
 
     return (
-        <Marker position={place} icon={storyClosed} eventHandlers={eventHandlers}>
+        <Marker position={place.location} icon={storyClosed} eventHandlers={eventHandlers}>
             <Popup>Marker</Popup>
         </Marker>
     );
@@ -99,10 +99,7 @@ const HomePage = () => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <LocationMarker />
-                <Marker icon={icon} position={[50.62984, 4.86382]} onClick={() => changeIcon()}>
-                    <Popup>A Story</Popup>
-                </Marker>
-                <MultipleMarkers onMarkerClick={handlePlaceSelect} />
+                {places && <MultipleMarkers places={places} onMarkerClick={handlePlaceSelect} />}
             </MapContainer>
         </div>
     );

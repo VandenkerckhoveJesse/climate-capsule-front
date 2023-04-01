@@ -28,7 +28,7 @@ const SideBar = ({
                     }}
                 />
             ) : (
-                <PlaceDetailsView selectedPlace={selectedPlace} onGoBack={onGoBackToSearch} />
+                <PlaceDetailsView place={selectedPlace} onGoBack={onGoBackToSearch} />
             )}
         </div>
     );

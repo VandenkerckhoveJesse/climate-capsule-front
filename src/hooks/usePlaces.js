@@ -8,6 +8,5 @@ const fetchPlacess = async ({ place, radius }) => {
 
 export const usePlaces = ({ place, radius }) => {
     const { data, isLoading } = useSWR({ place, radius }, fetchPlacess);
-    console.log(data);
     return { places: data, isLoading };
 };
