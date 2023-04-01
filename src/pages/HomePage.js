@@ -2,6 +2,8 @@ import { useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
+import storyOpen from "../components/Map/storyOpen";
+import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
@@ -23,9 +25,15 @@ function LocationMarker() {
     );
 }
 
-const handleClick = () => {};
+
+
+
 
 const HomePage = () => {
+  const [icon, setIcon] = useState(storyClosed)
+  const changeIcon = () => {
+    setIcon(storyOpen)
+  }
     return (
         <div>
             <SideBar />
@@ -41,7 +49,7 @@ const HomePage = () => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <LocationMarker />
-                <Marker icon={storyClosed} position={[50.62984, 4.86382]} onClick={handleClick}>
+                <Marker icon={icon} position={[50.62984, 4.86382]} onClick={() => changeIcon()}>
                     <Popup>A Story</Popup>
                 </Marker>
             </MapContainer>
