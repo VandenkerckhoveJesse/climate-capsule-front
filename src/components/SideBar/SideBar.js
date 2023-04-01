@@ -4,8 +4,8 @@ import PlaceDetailsView from "./PlaceDetailsView";
 import NewStory from "./NewStory";
 
 const SideBar = ({
-    places,
-    loading,
+    filteredPlaces,
+    isFilteredPlacesLoading,
     searchPlace,
     setSearchPlace,
     searchRadius,
@@ -30,14 +30,14 @@ const SideBar = ({
             ) : (
                 <SearchView
                     {...{
-                        places,
-                        loading,
+                        places: filteredPlaces,
+                        isPlacesLoading: isFilteredPlacesLoading,
                         searchPlace,
                         setSearchPlace,
                         searchRadius,
                         setSearchRadius,
                         onPlaceSelect,
-                        onAddClick: () => setIsAddStoryMode(true),
+                        onAddClicked: () => setIsAddStoryMode(true),
                     }}
                 />
             )}
