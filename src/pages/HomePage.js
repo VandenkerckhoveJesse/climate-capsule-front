@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
@@ -28,11 +28,22 @@ function LocationMarker() {
     );
 }
 
-function MultipleMarkers(){
+function MultipleMarkers() {
+  const eventHandlers = useMemo(
+    () => ({
+      click() {
+        alert("Hello")
+      }
+    }),
+    [],
+  )
+
   return Locations.location.map((x) => {
     let position = L.latLng(x['lat'], x['lng'])
     return (
-      <Marker position={position} icon={storyClosed}>
+      <Marker position={position}
+        icon={storyClosed}
+        eventHandlers={eventHandlers}>
         <Popup>Marker</Popup>
       </Marker>
     )
