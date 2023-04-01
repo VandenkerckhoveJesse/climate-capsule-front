@@ -36,3 +36,9 @@
 .loading {
     margin: 16px;
 }
+
+.error {
+    margin: 16px;
+    font-size: 16px;
+    color: #f00;
+}

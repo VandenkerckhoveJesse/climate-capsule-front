@@ -77,7 +77,11 @@ const HomePage = () => {
 
     const { places } = usePlaces();
 
-    const { filteredPlaces, isLoading: isFilteredPlacesLoading } = useFilteredPlaces({
+    const {
+        filteredPlaces,
+        isLoading: isFilteredPlacesLoading,
+        error: filteredPlacesError,
+    } = useFilteredPlaces({
         place: searchPlace,
         radius: searchRadius,
     });
@@ -101,6 +105,7 @@ const HomePage = () => {
                 setSearchRadius={setSearchRadius}
                 filteredPlaces={filteredPlaces}
                 isFilteredPlacesLoading={isFilteredPlacesLoading}
+                filteredPlacesError={filteredPlacesError}
                 onPlaceSelect={handlePlaceSelect}
                 onGoBackToSearch={handleGoBackToSearch}
                 selectedPlace={selectedPlace}

@@ -11,9 +11,11 @@ export const usePlaces = () => {
 };
 
 export const useFilteredPlaces = ({ place, radius }) => {
-    const { data, isLoading } = useSWR(["filteredPlaces", { place, radius }], async ([_, { place, radius }]) => {
-        return fetch(`${SERVER_IP}/stories?city=${place}&radius=${radius}`).then(res => res.json());
+    const { data, error } = useSWR(["filteredPlaces", place, radius], async ([_, place, radius]) => {
+        let url = `${SERVER_IP}/stories`;
+        if (place) url += `?city=${place}&radius=${radius}`;
+        return fetch(url).then(res => res.json());
     });
 
-    return { filteredPlaces: data, isLoading };
+    return { filteredPlaces: data ?? [], isLoading: !data && !error, error };
 };

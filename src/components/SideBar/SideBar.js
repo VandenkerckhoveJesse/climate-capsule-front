@@ -6,6 +6,7 @@ import NewStory from "./NewStory";
 const SideBar = ({
     filteredPlaces,
     isFilteredPlacesLoading,
+    filteredPlacesError,
     searchPlace,
     setSearchPlace,
     searchRadius,
@@ -32,6 +33,7 @@ const SideBar = ({
                     {...{
                         places: filteredPlaces,
                         isPlacesLoading: isFilteredPlacesLoading,
+                        placesError: filteredPlacesError,
                         searchPlace,
                         setSearchPlace,
                         searchRadius,

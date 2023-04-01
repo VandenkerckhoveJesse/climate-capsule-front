@@ -22,6 +22,7 @@ const PlaceItem = ({ isActive, place, onClick }) => {
 
 const SearchView = ({
     places,
+    placesError,
     isPlacesLoading,
     searchPlace,
     setSearchPlace,
@@ -76,7 +77,9 @@ const SearchView = ({
                 onChange={event => setSearchRadius(Number(event.target.value) || 1)}
             />
             <div style={{ flex: 1, marginTop: 16 }}>
-                {isPlacesLoading ? (
+                {placesError ? (
+                    <div className={styles.error}>Place not found</div>
+                ) : isPlacesLoading ? (
                     <div className={styles.loading}>Loading...</div>
                 ) : places.length > 0 ? (
                     <ul className={styles.pacesList}>
@@ -91,7 +94,7 @@ const SearchView = ({
                         ))}
                     </ul>
                 ) : (
-                    <div className={styles.emptyPlaces}>No places</div>
+                    <div className={styles.emptyPlaces}>No stories</div>
                 )}
             </div>
             <button style={{ margin: 16 }} onClick={onAddClicked}>
