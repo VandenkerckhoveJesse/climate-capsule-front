@@ -13,3 +13,7 @@ body {
 .map-container {
     height: 100vh;
 }
+
+.detailsContainer {
+    background: red;
+}

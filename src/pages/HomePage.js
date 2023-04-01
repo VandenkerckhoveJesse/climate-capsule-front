@@ -1,11 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
 import storyOpen from "../components/Map/storyOpen";
 import Locations from "./locations";
-import { setSelectionRange } from "@testing-library/user-event/dist/utils";
-import { useSuggestions } from "../hooks/useSuggestions";
+import { usePlaces } from "../hooks/usePlaces";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
@@ -26,51 +25,48 @@ function LocationMarker() {
         </Marker>
     );
 }
+const DEFAULT_FILTERS = {
+    searchPlace: "",
+    searchRadius: 1,
+};
 
-function MultipleMarkers({ onMarkerClick }) {
-
-  return Locations.location.map((x) => {
-    return <Markers place={x} markerClick={onMarkerClick} />
-  })
+function MultipleMarkers({ places, onMarkerClick }) {
+    return places.map(place => <SingleMarker place={place} onMarkerClick={onMarkerClick} />);
 }
 
-function Markers({ place, markerClick })
- {
-  const eventHandlers = useMemo(
-    () => ({
-      click() {
-        markerClick(place);
-      }
-    }),
-    [],)
+function SingleMarker({ place, onMarkerClick }) {
+    const eventHandlers = {
+        click() {
+            onMarkerClick(place);
+        },
+    };
 
-  return (
-    <Marker position={place}
-      icon={storyClosed}
-      eventHandlers={eventHandlers}>
-      <Popup>Marker</Popup>
-    </Marker>
-  )
- }
+    return (
+        <Marker position={place.location} icon={storyClosed} eventHandlers={eventHandlers}>
+            <Popup>Marker</Popup>
+        </Marker>
+    );
+}
+
 const HomePage = () => {
-  const [icon, setIcon] = useState(storyClosed)
-  const changeIcon = () => {
-    setIcon(storyOpen)
-  }
+    const [icon, setIcon] = useState(storyClosed);
+    const changeIcon = () => {
+        setIcon(storyOpen);
+    };
 
-    const [searchPlace, setSearchPlace] = useState("");
-    const [searchRadius, setSearchRadius] = useState(1);
+    const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
+    const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
 
     const [selectedPlace, setSelectedPlace] = useState(null);
 
-    const { suggestions, isLoading } = useSuggestions({
+    const { places, isLoading } = usePlaces({
         place: searchPlace,
         radius: searchRadius,
     });
 
-    const handleSuggestionSelect = place => {
-        // we can here do something with the selected suggestion,
-        // for example, move the map to the suggestion location
+    const handlePlaceSelect = place => {
+        // we can here do something with the selected place,
+        // for example, move the map to the place location
         setSelectedPlace(place);
     };
 
@@ -81,11 +77,13 @@ const HomePage = () => {
     return (
         <div>
             <SideBar
+                searchPlace={searchPlace}
                 setSearchPlace={setSearchPlace}
+                searchRadius={searchRadius}
                 setSearchRadius={setSearchRadius}
-                suggestions={suggestions}
+                places={places}
                 isLoading={isLoading}
-                onSuggestionSelect={handleSuggestionSelect}
+                onPlaceSelect={handlePlaceSelect}
                 onGoBackToSearch={handleGoBackToSearch}
                 selectedPlace={selectedPlace}
             />
@@ -101,10 +99,7 @@ const HomePage = () => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <LocationMarker />
-                <Marker icon={icon} position={[50.62984, 4.86382]} onClick={() => changeIcon()}>
-                    <Popup>A Story</Popup>
-                </Marker>
-                <MultipleMarkers onMarkerClick={handleSuggestionSelect} />
+                {places && <MultipleMarkers places={places} onMarkerClick={handlePlaceSelect} />}
             </MapContainer>
         </div>
     );
