@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup, Polyline } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
-import { usePlaces, useFilter } from "../hooks/usePlaces";
+import { usePlaces, useFilter, useAdventure } from "../hooks/usePlaces";
 import redLocator from "../components/Map/RedMarker";
+import NewAdventure from "../components/Adventure/newAdventure";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
@@ -68,7 +69,6 @@ function SingleMarker({ place, onMarkerClick }) {
 const HomePage = () => {
     const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
     const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
-
     const [isAddStoryMode, setIsAddStoryMode] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
 
@@ -80,7 +80,10 @@ const HomePage = () => {
         place: searchPlace,
         radius: searchRadius,
     });
-    console.log(filteredPlaces, loading);
+
+    const { adventure, isLoading: loaingAdventure } = useAdventure({});
+    const greenOptions = { color: 'red' }
+
     const handlePlaceSelect = place => {
         // we can here do something with the selected place,
         // for example, move the map to the place location
@@ -127,6 +130,7 @@ const HomePage = () => {
                     />
                 )}
                 {places && <MultipleMarkers places={places} onMarkerClick={handlePlaceSelect} />}
+                {loaingAdventure ? (<div>Loading...</div>) : <Polyline pathOptions={greenOptions} positions={adventure.path.coordinates} />}
             </MapContainer>
         </div>
     );
