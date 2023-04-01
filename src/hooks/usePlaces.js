@@ -15,6 +15,5 @@ export const useFilteredPlaces = ({ place, radius }) => {
         return fetch(`${SERVER_IP}/stories?city=${place}&radius=${radius}`).then(res => res.json());
     });
 
-    console.log("hadii", data);
     return { filteredPlaces: data, isLoading };
 };
