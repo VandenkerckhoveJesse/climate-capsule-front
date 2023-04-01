@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapContainer, TileLayer, useMapEvents, ZoomControl } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 
 function LocationMarker() {
@@ -10,27 +10,28 @@ function LocationMarker() {
     },
     locationfound(e) {
       setPosition(e.latlng)
-      map.flyTo(e.latlng, map.getZoom())
+      map.setZoom(13)
+      map.flyTo(e.latlng)
     },
   })
 
-  // return position === null ? null : (
-  //   <Marker position={position}>
-  //     <Popup>Current Location</Popup>
-  //   </Marker>
-  // )
+  return position === null ? null : (
+    <Marker position={position}>
+      <Popup>Current Location</Popup>
+    </Marker>
+  )
 }
 
 
 const HomePage = () => {
     return (
         <div>
-            <SideBar />
+            {/* <SideBar /> */}
             <MapContainer
               className="map-container"
-              center={[51.0, 19.0]}
-              zoom={4}
-              maxZoom={18}>
+              center={[50.8476, 4.3572]}
+              zoom={8}
+              scrollWheelZoom={false}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
