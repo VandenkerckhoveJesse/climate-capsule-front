@@ -23,6 +23,10 @@ function LocationMarker() {
   )
 }
 
+const handleClick = () => {
+
+}
+
 const HomePage = () => {
     return (
         <div>
@@ -37,7 +41,7 @@ const HomePage = () => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
               <LocationMarker />
-              <Marker icon={storyClosed} position={[50.629840, 4.863820]}>
+              <Marker icon={storyClosed} position={[50.629840, 4.863820]} onClick={handleClick}>
                 <Popup>A Story</Popup>
               </Marker>
             </MapContainer>
