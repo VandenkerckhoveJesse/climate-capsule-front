@@ -13,6 +13,7 @@ const SideBar = ({
     onPlaceSelect,
     onGoBackToSearch,
 }) => {
+  console.log(places)
     return (
         <div className={styles.container}>
             {!selectedPlace ? (
