@@ -28,6 +28,7 @@ const SearchView = ({
     searchRadius,
     setSearchRadius,
     onPlaceSelect,
+    onAddClick,
 }) => {
     const [activePlaceIndex, setActivePlaceIndex] = useState(-1);
 
@@ -91,6 +92,7 @@ const SearchView = ({
             ) : (
                 <div className={styles.emptyPlaces}>No places</div>
             )}
+            <button onClick={onAddClick}>Add Story</button>
         </>
     );
 };
