@@ -11,5 +11,9 @@ body {
 }
 
 .map-container {
-    height: 60vh;
+    height: 100vh;
+}
+
+.detailsContainer {
+    background: red;
 }
