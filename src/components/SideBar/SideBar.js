@@ -5,7 +5,7 @@ import NewStory from "./NewStory";
 
 const SideBar = ({
     places,
-    isLoading,
+    loading,
     searchPlace,
     setSearchPlace,
     searchRadius,
@@ -31,7 +31,7 @@ const SideBar = ({
                 <SearchView
                     {...{
                         places,
-                        isLoading,
+                        loading,
                         searchPlace,
                         setSearchPlace,
                         searchRadius,

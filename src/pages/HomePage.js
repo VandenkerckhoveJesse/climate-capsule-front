@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
-import { usePlaces } from "../hooks/usePlaces";
+import { usePlaces, useFilter } from "../hooks/usePlaces";
 import redLocator from "../components/Map/RedMarker";
 
 function LocationMarker() {
@@ -74,11 +74,13 @@ const HomePage = () => {
 
     const [selectedPlace, setSelectedPlace] = useState(null);
 
-    const { places, isLoading } = usePlaces({
+    const { places, isLoading } = usePlaces({});
+
+    const { filteredPlaces, isLoading: loading } = useFilter({
         place: searchPlace,
         radius: searchRadius,
     });
-
+    console.log(filteredPlaces, loading);
     const handlePlaceSelect = place => {
         // we can here do something with the selected place,
         // for example, move the map to the place location
@@ -96,8 +98,8 @@ const HomePage = () => {
                 setSearchPlace={setSearchPlace}
                 searchRadius={searchRadius}
                 setSearchRadius={setSearchRadius}
-                places={places}
-                isLoading={isLoading}
+                filteredPlaces={filteredPlaces}
+                loading={loading}
                 onPlaceSelect={handlePlaceSelect}
                 onGoBackToSearch={handleGoBackToSearch}
                 selectedPlace={selectedPlace}
