@@ -1,6 +1,6 @@
 import styles from "./sideBar.module.css";
 import SearchView from "./SearchView";
-import PlaceDetailsView from "./PlaceDetailsView";
+import StoryDetailsView from "./StoryDetailsView";
 import NewStory from "./NewStory";
 
 const SideBar = ({
@@ -11,7 +11,7 @@ const SideBar = ({
     setSearchPlace,
     searchRadius,
     setSearchRadius,
-    selectedPlace,
+    selectedStory,
     onStorySelect,
     onGoBackToSearch,
     isAddStoryMode,
@@ -21,8 +21,8 @@ const SideBar = ({
 }) => {
     return (
         <div className={styles.container}>
-            {selectedPlace ? (
-                <PlaceDetailsView place={selectedPlace} onGoBack={onGoBackToSearch} />
+            {selectedStory ? (
+                <StoryDetailsView story={selectedStory} onGoBack={onGoBackToSearch} />
             ) : isAddStoryMode ? (
                 <NewStory
                     selectedLocation={selectedLocation}

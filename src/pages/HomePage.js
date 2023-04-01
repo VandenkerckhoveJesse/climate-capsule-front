@@ -29,10 +29,10 @@ function LocationMarker() {
 
 const SelectedLocationMarker = ({ selectedLocation, setSelectedLocation }) => {
     const map = useMapEvents({
-        click(e) {
+        click(event) {
             map.setZoom(13);
-            setSelectedLocation(e.latlng);
-            map.flyTo(e.latlng);
+            setSelectedLocation(event.latlng);
+            map.flyTo(event.latlng);
         },
     });
 
@@ -67,13 +67,15 @@ function SingleMarker({ story, onMarkerClick }) {
 }
 
 const HomePage = () => {
+    const [map, setMap] = useState(null);
+
     const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
     const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
 
     const [isAddStoryMode, setIsAddStoryMode] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
 
-    const [selectedPlace, setSelectedPlace] = useState(null);
+    const [selectedStory, setSelectedStory] = useState(null);
 
     const { stories, addStory } = useStories();
 
@@ -88,18 +90,23 @@ const HomePage = () => {
     });
 
     const handleStorySelect = place => {
-        // we can here do something with the selected place,
-        // for example, move the map to the place location
-        setSelectedPlace(place);
+        setSelectedStory(place);
+        setSelectedLocation(place.location);
+        map.setView(place.location, 13, { animate: true });
     };
 
     const handleGoBackToSearch = () => {
-        setSelectedPlace(null);
+        setSelectedStory(null);
+        map.locate();
     };
 
     const handleAddNewStory = async newStory => {
         await addStory(newStory);
         await revalidateFilteredStories();
+    };
+
+    const handleLocationSelected = location => {
+        setSelectedLocation(location);
     };
 
     return (
@@ -114,7 +121,7 @@ const HomePage = () => {
                 filteredStoriesError={filteredStoriesError}
                 onStorySelect={handleStorySelect}
                 onGoBackToSearch={handleGoBackToSearch}
-                selectedPlace={selectedPlace}
+                selectedStory={selectedStory}
                 isAddStoryMode={isAddStoryMode}
                 setIsAddStoryMode={setIsAddStoryMode}
                 selectedLocation={selectedLocation}
@@ -122,6 +129,7 @@ const HomePage = () => {
                 handleAddNewStory={handleAddNewStory}
             />
             <MapContainer
+                ref={setMap}
                 className="map-container"
                 center={[50.8476, 4.3572]}
                 zoom={8}
@@ -132,13 +140,8 @@ const HomePage = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <LocationMarker isAddStoryMode={isAddStoryMode} onLocationSelected={setSelectedLocation} />
-                {isAddStoryMode && (
-                    <SelectedLocationMarker
-                        selectedLocation={selectedLocation}
-                        setSelectedLocation={setSelectedLocation}
-                    />
-                )}
+                <LocationMarker isAddStoryMode={isAddStoryMode} onLocationSelected={handleLocationSelected} />
+                <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
                 {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
             </MapContainer>
         </div>

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { CCarousel, CCarouselItem, CModal, CModalBody, CModalHeader, CModalTitle } from "@coreui/react";
-import styles from "./placeDetailsView.module.css";
+import styles from "./storyDetailsView.module.css";
 
-const Book = ({ place, isOpen, setIsOpen }) => {
+const Book = ({ story, isOpen, setIsOpen }) => {
     const renderPage = page => {
         switch (page.type) {
             case "IMAGE":
                 return (
                     <div className={styles.imagePage}>
-                        <img src={page.content} alt={place.title} />;
+                        <img src={page.content} alt={story.title} />;
                     </div>
                 );
             case "TEXT":
@@ -21,11 +21,11 @@ const Book = ({ place, isOpen, setIsOpen }) => {
     return (
         <CModal fullscreen visible={isOpen} onClose={() => setIsOpen(false)}>
             <CModalHeader>
-                <CModalTitle>{place.title}</CModalTitle>
+                <CModalTitle>{story.title}</CModalTitle>
             </CModalHeader>
             <CModalBody>
                 <CCarousel dark interval={false} controls style={{ height: "100%" }}>
-                    {place.book.pages.map(page => (
+                    {story.book.pages.map(page => (
                         <CCarouselItem key={page.type + page.content} style={{ height: "100%" }}>
                             <div className={styles.pageContainer}>{renderPage(page)}</div>
                         </CCarouselItem>
@@ -36,7 +36,7 @@ const Book = ({ place, isOpen, setIsOpen }) => {
     );
 };
 
-const PlaceDetailsView = ({ place, onGoBack }) => {
+const StoryDetailsView = ({ story, onGoBack }) => {
     const [isBookOpen, setIsBookOpen] = useState(false);
 
     return (
@@ -44,11 +44,11 @@ const PlaceDetailsView = ({ place, onGoBack }) => {
             <button className={styles.goBack} onClick={onGoBack}>
                 {"<--- Go back"}
             </button>
-            <div className={styles.title}>{place.title}</div>
-            <div className={styles.content}>{place.summary.slice(0, 1_200)}...</div>
+            <div className={styles.title}>{story.title}</div>
+            <div className={styles.content}>{story.summary.slice(0, 1_200)}...</div>
             <div className={styles.showMore}>
                 <button onClick={() => setIsBookOpen(true)}>continue reading?</button>
-                <Book place={place} isOpen={isBookOpen} setIsOpen={setIsBookOpen} />
+                <Book story={story} isOpen={isBookOpen} setIsOpen={setIsBookOpen} />
             </div>
             <div className={styles.footer}>
                 <div className={styles.date}>Jack Huffmann</div>
@@ -58,4 +58,4 @@ const PlaceDetailsView = ({ place, onGoBack }) => {
     );
 };
 
-export default PlaceDetailsView;
+export default StoryDetailsView;
