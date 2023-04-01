@@ -1,6 +1,7 @@
 import styles from "./sideBar.module.css";
 import SearchView from "./SearchView";
 import PlaceDetailsView from "./PlaceDetailsView";
+import NewStory from "./NewStory";
 
 const SideBar = ({
     places,
@@ -12,11 +13,21 @@ const SideBar = ({
     selectedPlace,
     onPlaceSelect,
     onGoBackToSearch,
+    isAddStoryMode,
+    setIsAddStoryMode,
+    selectedLocation,
 }) => {
-  console.log(places)
     return (
         <div className={styles.container}>
-            {!selectedPlace ? (
+            {selectedPlace ? (
+                <PlaceDetailsView place={selectedPlace} onGoBack={onGoBackToSearch} />
+            ) : isAddStoryMode ? (
+                <NewStory
+                    selectedLocation={selectedLocation}
+                    onCancel={() => setIsAddStoryMode(false)}
+                    onSubmit={newStory => alert(JSON.stringify(newStory))}
+                />
+            ) : (
                 <SearchView
                     {...{
                         places,
@@ -26,10 +37,9 @@ const SideBar = ({
                         searchRadius,
                         setSearchRadius,
                         onPlaceSelect,
+                        onAddClick: () => setIsAddStoryMode(true),
                     }}
                 />
-            ) : (
-                <PlaceDetailsView place={selectedPlace} onGoBack={onGoBackToSearch} />
             )}
         </div>
     );

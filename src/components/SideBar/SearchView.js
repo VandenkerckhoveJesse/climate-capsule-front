@@ -3,7 +3,6 @@ import { useCallback, useState } from "react";
 import { useEvent } from "react-use";
 import clsx from "clsx";
 
-
 const PlaceItem = ({ isActive, place, onClick }) => {
     const autoScrollRefCallback = useCallback(
         node => {
@@ -29,6 +28,7 @@ const SearchView = ({
     searchRadius,
     setSearchRadius,
     onPlaceSelect,
+    onAddClick,
 }) => {
     const [activePlaceIndex, setActivePlaceIndex] = useState(-1);
 
@@ -92,7 +92,7 @@ const SearchView = ({
             ) : (
                 <div className={styles.emptyPlaces}>No places</div>
             )}
-            <button>Add Story</button>
+            <button onClick={onAddClick}>Add Story</button>
         </>
     );
 };
