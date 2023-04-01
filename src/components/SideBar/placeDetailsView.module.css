@@ -9,7 +9,7 @@
 .goBack {
     font-weight: bold;
     align-self: start;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
 }
 
 .title {
@@ -23,6 +23,14 @@
 
 .content {
     flex: 1;
+    overflow: hidden;
+}
+
+.showMore {
+    align-self: stretch;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
 }
 
 .footer {
