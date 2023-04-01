@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useEvent } from "react-use";
 import clsx from "clsx";
 
-const PlaceItem = ({ isActive, place, onClick }) => {
+const PlaceItem = ({ isActive, filteredPlaces, onClick }) => {
     const autoScrollRefCallback = useCallback(
         node => {
             if (node !== null && isActive) {
@@ -15,14 +15,14 @@ const PlaceItem = ({ isActive, place, onClick }) => {
 
     return (
         <li ref={autoScrollRefCallback} className={clsx(styles.place, isActive && styles.active)} onClick={onClick}>
-            {place.title}
+            {filteredPlaces.title}
         </li>
     );
 };
 
 const SearchView = ({
-    places,
-    isLoading,
+    filteredPlaces,
+    loading,
     searchPlace,
     setSearchPlace,
     searchRadius,
@@ -32,15 +32,15 @@ const SearchView = ({
     const [activePlaceIndex, setActivePlaceIndex] = useState(-1);
 
     useEvent("keydown", event => {
-        if (!places) return;
+        if (!filteredPlaces) return;
 
         // navigate the places with arrow keys
         if (event.key === "ArrowDown") {
-            setActivePlaceIndex((activePlaceIndex + 1) % places.length);
+            setActivePlaceIndex((activePlaceIndex + 1) % filteredPlaces.length);
         } else if (event.key === "ArrowUp") {
-            setActivePlaceIndex((activePlaceIndex - 1 + places.length) % places.length);
+            setActivePlaceIndex((activePlaceIndex - 1 + filteredPlaces.length) % filteredPlaces.length);
         } else if (event.key === "Enter") {
-            onPlaceSelect(places[activePlaceIndex]);
+            onPlaceSelect(filteredPlaces[activePlaceIndex]);
         }
     });
 
@@ -74,11 +74,11 @@ const SearchView = ({
                 value={searchRadius}
                 onChange={event => setSearchRadius(Number(event.target.value) || 1)}
             />
-            {isLoading ? (
+            {loading ? (
                 <div className={styles.loading}>Loading...</div>
-            ) : places.length > 0 ? (
+            ) : filteredPlaces?.length > 0 ? (
                 <ul className={styles.pacesList}>
-                    {places.map((place, index) => (
+                    {filteredPlaces.map((place, index) => (
                         <div key={place.name} onMouseOver={() => setActivePlaceIndex(index)}>
                             <PlaceItem
                                 place={place}

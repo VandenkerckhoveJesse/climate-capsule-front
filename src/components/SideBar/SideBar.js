@@ -4,7 +4,7 @@ import PlaceDetailsView from "./PlaceDetailsView";
 
 const SideBar = ({
     places,
-    isLoading,
+    loading,
     searchPlace,
     setSearchPlace,
     searchRadius,
@@ -13,14 +13,13 @@ const SideBar = ({
     onPlaceSelect,
     onGoBackToSearch,
 }) => {
-  console.log(places)
     return (
         <div className={styles.container}>
             {!selectedPlace ? (
                 <SearchView
                     {...{
                         places,
-                        isLoading,
+                        loading,
                         searchPlace,
                         setSearchPlace,
                         searchRadius,
