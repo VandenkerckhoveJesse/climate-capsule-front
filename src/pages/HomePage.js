@@ -28,25 +28,30 @@ function LocationMarker() {
     );
 }
 
-function MultipleMarkers(){
-  return Locations.location.map((x) => {
-    let position = L.latLng(x['lat'], x['lng'])
-    return (
-      <Marker position={position} icon={storyClosed}>
-        <Popup>Marker</Popup>
-      </Marker>
-    )
-  })
+function MultipleMarkers() {
+    return Locations.location.map(x => {
+        let position = L.latLng(x["lat"], x["lng"]);
+        return (
+            <Marker position={position} icon={storyClosed}>
+                <Popup>Marker</Popup>
+            </Marker>
+        );
+    });
 }
 
-const HomePage = () => {
-  const [icon, setIcon] = useState(storyClosed)
-  const changeIcon = () => {
-    setIcon(storyOpen)
-  }
+const DEFAULT_FILTERS = {
+    searchPlace: "",
+    searchRadius: 1,
+};
 
-    const [searchPlace, setSearchPlace] = useState("");
-    const [searchRadius, setSearchRadius] = useState(1);
+const HomePage = () => {
+    const [icon, setIcon] = useState(storyClosed);
+    const changeIcon = () => {
+        setIcon(storyOpen);
+    };
+
+    const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
+    const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
 
     const [selectedPlace, setSelectedPlace] = useState(null);
 
@@ -68,7 +73,9 @@ const HomePage = () => {
     return (
         <div>
             <SideBar
+                searchPlace={searchPlace}
                 setSearchPlace={setSearchPlace}
+                searchRadius={searchRadius}
                 setSearchRadius={setSearchRadius}
                 suggestions={suggestions}
                 isLoading={isLoading}

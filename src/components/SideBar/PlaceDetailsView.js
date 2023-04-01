@@ -1,12 +1,18 @@
-import styles from "./sidebar.module.css";
+import styles from "./placeDetailsView.module.css";
+import { loremEpsum } from "../../utils/string";
 
 const PlaceDetailsView = ({ selectedPlace, onGoBack }) => {
     return (
-        <div style={styles.detailsContainer}>
-            <button onClick={onGoBack} style={{ fontWeight: "bolder" }}>
-                {"<---"}
+        <div className={styles.container}>
+            <button className={styles.goBack} onClick={onGoBack}>
+                {"<--- Go back"}
             </button>
-            <h1>{selectedPlace.name}</h1>
+            <div className={styles.title}>{selectedPlace.name}</div>
+            <div className={styles.content}>{loremEpsum().slice(0, 1_200)}...</div>
+            <div className={styles.footer}>
+                <div className={styles.date}>Jack Huffmann</div>
+                <div className={styles.author}>10-1-1982</div>
+            </div>
         </div>
     );
 };

@@ -1,11 +1,13 @@
-import styles from "./sidebar.module.css";
+import styles from "./sideBar.module.css";
 import SearchView from "./SearchView";
 import PlaceDetailsView from "./PlaceDetailsView";
 
 const SideBar = ({
     suggestions,
     isLoading,
+    searchPlace,
     setSearchPlace,
+    searchRadius,
     setSearchRadius,
     selectedPlace,
     onSuggestionSelect,
@@ -18,7 +20,9 @@ const SideBar = ({
                     {...{
                         suggestions,
                         isLoading,
+                        searchPlace,
                         setSearchPlace,
+                        searchRadius,
                         setSearchRadius,
                         onSuggestionSelect,
                     }}

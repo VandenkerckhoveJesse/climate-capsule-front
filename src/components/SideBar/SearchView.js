@@ -1,4 +1,4 @@
-import styles from "./sidebar.module.css";
+import styles from "./searchView.module.css";
 import { useCallback, useState } from "react";
 import { useEvent } from "react-use";
 import clsx from "clsx";
@@ -23,7 +23,15 @@ const Suggestion = ({ isActive, suggestion, onClick }) => {
     );
 };
 
-const SearchView = ({ suggestions, isLoading, setSearchPlace, setSearchRadius, onSuggestionSelect }) => {
+const SearchView = ({
+    suggestions,
+    isLoading,
+    searchPlace,
+    setSearchPlace,
+    searchRadius,
+    setSearchRadius,
+    onSuggestionSelect,
+}) => {
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
 
     useEvent("keydown", event => {
@@ -58,6 +66,7 @@ const SearchView = ({ suggestions, isLoading, setSearchPlace, setSearchRadius, o
                 placeholder={"Search a place"}
                 onKeyDown={handleInputKeyDown}
                 onChange={handleSearchTextChange}
+                value={searchPlace}
             />
             <input
                 type={"number"}
@@ -65,6 +74,7 @@ const SearchView = ({ suggestions, isLoading, setSearchPlace, setSearchRadius, o
                 className={styles.input}
                 placeholder={"radius in KM (default 1)"}
                 onKeyDown={handleInputKeyDown}
+                value={searchRadius}
                 onChange={event => setSearchRadius(Number(event.target.value) || 1)}
             />
             {isLoading ? (
