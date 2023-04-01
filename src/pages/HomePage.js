@@ -6,6 +6,7 @@ import storyOpen from "../components/Map/storyOpen";
 import Locations from "./locations";
 import * as L from "leaflet";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
+import { useSuggestions } from "../hooks/useSuggestions";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
@@ -43,9 +44,38 @@ const HomePage = () => {
   const changeIcon = () => {
     setIcon(storyOpen)
   }
+
+    const [searchPlace, setSearchPlace] = useState("");
+    const [searchRadius, setSearchRadius] = useState(1);
+
+    const [selectedPlace, setSelectedPlace] = useState(null);
+
+    const { suggestions, isLoading } = useSuggestions({
+        place: searchPlace,
+        radius: searchRadius,
+    });
+
+    const handleSuggestionSelect = place => {
+        // we can here do something with the selected suggestion,
+        // for example, move the map to the suggestion location
+        setSelectedPlace(place);
+    };
+
+    const handleGoBackToSearch = () => {
+        setSelectedPlace(null);
+    };
+
     return (
         <div>
-            <SideBar />
+            <SideBar
+                setSearchPlace={setSearchPlace}
+                setSearchRadius={setSearchRadius}
+                suggestions={suggestions}
+                isLoading={isLoading}
+                onSuggestionSelect={handleSuggestionSelect}
+                onGoBackToSearch={handleGoBackToSearch}
+                selectedPlace={selectedPlace}
+            />
             <MapContainer
                 className="map-container"
                 center={[50.8476, 4.3572]}
