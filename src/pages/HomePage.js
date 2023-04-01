@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
-import { useSuggestions } from "../components/SideBar/useSuggestions";
+import { useSuggestions } from "../hooks/useSuggestions";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
