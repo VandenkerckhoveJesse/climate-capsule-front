@@ -35,6 +35,7 @@ const HomePage = () => {
                 zoom={8}
                 scrollWheelZoom={false}
                 zoomControl={false}>
+                <ZoomControl position="bottomright" />
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
