@@ -30,15 +30,21 @@ const HomePage = () => {
     const [searchPlace, setSearchPlace] = useState("");
     const [searchRadius, setSearchRadius] = useState(1);
 
+    const [selectedPlace, setSelectedPlace] = useState(null);
+
     const { suggestions, isLoading } = useSuggestions({
         place: searchPlace,
         radius: searchRadius,
     });
 
-    const handleSuggestionSelect = suggestion => {
+    const handleSuggestionSelect = place => {
         // we can here do something with the selected suggestion,
         // for example, move the map to the suggestion location
-        alert(suggestion.name);
+        setSelectedPlace(place);
+    };
+
+    const handleGoBackToSearch = () => {
+        setSelectedPlace(null);
     };
 
     return (
@@ -49,6 +55,8 @@ const HomePage = () => {
                 suggestions={suggestions}
                 isLoading={isLoading}
                 onSuggestionSelect={handleSuggestionSelect}
+                onGoBackToSearch={handleGoBackToSearch}
+                selectedPlace={selectedPlace}
             />
             <MapContainer
                 className="map-container"

@@ -32,7 +32,15 @@ const Suggestion = ({ isActive, suggestion, onClick }) => {
     );
 };
 
-const SideBar = ({ suggestions, isLoading, setSearchPlace, setSearchRadius, onSuggestionSelect }) => {
+const SideBar = ({
+    suggestions,
+    isLoading,
+    setSearchPlace,
+    setSearchRadius,
+    selectedPlace,
+    onSuggestionSelect,
+    onGoBackToSearch,
+}) => {
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
 
     const handleSearchTextChange = event => {
@@ -60,38 +68,47 @@ const SideBar = ({ suggestions, isLoading, setSearchPlace, setSearchRadius, onSu
 
     return (
         <div className={styles.container}>
-            <input
-                type={"text"}
-                autoComplete="off"
-                className={styles.input}
-                placeholder={"Search a place"}
-                onKeyDown={handleInputKeyDown}
-                onChange={handleSearchTextChange}
-            />
-            <input
-                type={"number"}
-                min={1}
-                className={styles.input}
-                placeholder={"radius in KM (default 1)"}
-                onKeyDown={handleInputKeyDown}
-                onChange={event => setSearchRadius(Number(event.target.value) || 1)}
-            />
-            {isLoading ? (
-                <div className={styles.loading}>Loading...</div>
-            ) : suggestions.length > 0 ? (
-                <ul className={styles.suggestionsList}>
-                    {suggestions.map((suggestion, index) => (
-                        <div key={suggestion.name} onMouseOver={() => setActiveSuggestionIndex(index)}>
-                            <Suggestion
-                                suggestion={suggestion}
-                                isActive={index === activeSuggestionIndex}
-                                onClick={() => onSuggestionSelect(suggestion)}
-                            />
-                        </div>
-                    ))}
-                </ul>
+            {!selectedPlace ? (
+                <>
+                    <input
+                        type={"text"}
+                        autoComplete="off"
+                        className={styles.input}
+                        placeholder={"Search a place"}
+                        onKeyDown={handleInputKeyDown}
+                        onChange={handleSearchTextChange}
+                    />
+                    <input
+                        type={"number"}
+                        min={1}
+                        className={styles.input}
+                        placeholder={"radius in KM (default 1)"}
+                        onKeyDown={handleInputKeyDown}
+                        onChange={event => setSearchRadius(Number(event.target.value) || 1)}
+                    />
+                    {isLoading ? (
+                        <div className={styles.loading}>Loading...</div>
+                    ) : suggestions.length > 0 ? (
+                        <ul className={styles.suggestionsList}>
+                            {suggestions.map((suggestion, index) => (
+                                <div key={suggestion.name} onMouseOver={() => setActiveSuggestionIndex(index)}>
+                                    <Suggestion
+                                        suggestion={suggestion}
+                                        isActive={index === activeSuggestionIndex}
+                                        onClick={() => onSuggestionSelect(suggestion)}
+                                    />
+                                </div>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div className={styles.emptySuggestions}>No suggestions</div>
+                    )}
+                </>
             ) : (
-                <div className={styles.emptySuggestions}>No suggestions</div>
+                <div>
+                    <h1>{selectedPlace.name}</h1>
+                    <button onClick={onGoBackToSearch}>go back</button>
+                </div>
             )}
         </div>
     );
