@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
+import { useSuggestions } from "../components/SideBar/useSuggestions";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
@@ -26,9 +27,23 @@ function LocationMarker() {
 const handleClick = () => {};
 
 const HomePage = () => {
+    const [searchPlace, setSearchPlace] = useState("");
+    const [searchRadius, setSearchRadius] = useState(1);
+
+    const { suggestions, isLoading } = useSuggestions({
+        place: searchPlace,
+        radius: searchRadius,
+    });
+
     return (
         <div>
-            <SideBar />
+            <SideBar
+                setSearchPlace={setSearchPlace}
+                setSearchRadius={setSearchRadius}
+                suggestions={suggestions}
+                isLoading={isLoading}
+                onSuggestionSelect={suggestion => alert(suggestion.name)}
+            />
             <MapContainer
                 className="map-container"
                 center={[50.8476, 4.3572]}

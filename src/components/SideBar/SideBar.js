@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import styles from "./sidebar.module.css";
-import { useSuggestions } from "./useSuggestions";
 import clsx from "clsx";
 import { useEvent } from "react-use";
 
@@ -13,7 +12,7 @@ import { useEvent } from "react-use";
 // author
 // data
 
-const Suggestion = ({ isActive, suggestion }) => {
+const Suggestion = ({ isActive, suggestion, onClick }) => {
     const autoScrollRefCallback = useCallback(
         node => {
             if (node !== null && isActive) {
@@ -24,26 +23,24 @@ const Suggestion = ({ isActive, suggestion }) => {
     );
 
     return (
-        <li ref={autoScrollRefCallback} className={clsx(styles.suggestion, isActive && styles.active)}>
+        <li
+            ref={autoScrollRefCallback}
+            className={clsx(styles.suggestion, isActive && styles.active)}
+            onClick={onClick}>
             {suggestion.name}
         </li>
     );
 };
 
-const SideBar = () => {
-    const [searchText, setSearchText] = useState("");
-    const [area, setArea] = useState(0);
-
-    const { suggestions, isLoading } = useSuggestions(searchText);
-
+const SideBar = ({ suggestions, isLoading, setSearchPlace, setSearchRadius, onSuggestionSelect }) => {
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
 
     const handleSearchTextChange = event => {
-        setSearchText(event.target.value);
+        setSearchPlace(event.target.value);
         setActiveSuggestionIndex(0);
     };
 
-    const handleSearchInputKeyDown = event => {
+    const handleInputKeyDown = event => {
         const isSuggestionNavigationKey = ["ArrowDown", "ArrowUp", "Enter"].includes(event.key);
         if (isSuggestionNavigationKey) event.preventDefault();
     };
@@ -57,8 +54,7 @@ const SideBar = () => {
         } else if (event.key === "ArrowUp") {
             setActiveSuggestionIndex((activeSuggestionIndex - 1 + suggestions.length) % suggestions.length);
         } else if (event.key === "Enter") {
-            const pressedSuggestion = suggestions[activeSuggestionIndex];
-            alert(pressedSuggestion.name);
+            onSuggestionSelect(suggestions[activeSuggestionIndex]);
         }
     });
 
@@ -69,22 +65,28 @@ const SideBar = () => {
                 autoComplete="off"
                 className={styles.input}
                 placeholder={"Search a place"}
-                onKeyDown={handleSearchInputKeyDown}
+                onKeyDown={handleInputKeyDown}
                 onChange={handleSearchTextChange}
             />
             <input
                 type={"number"}
+                min={1}
                 className={styles.input}
-                placeholder={"area in KM"}
-                onChange={event => setArea(event.target.value)}
+                placeholder={"radius in KM (default 1)"}
+                onKeyDown={handleInputKeyDown}
+                onChange={event => setSearchRadius(Number(event.target.value) || 1)}
             />
             {isLoading ? (
-                <div style={{ marginLeft: "16px" }}>Loading...</div>
-            ) : suggestions ? (
+                <div className={styles.loading}>Loading...</div>
+            ) : suggestions.length > 0 ? (
                 <ul className={styles.suggestionsList}>
                     {suggestions.map((suggestion, index) => (
                         <div key={suggestion.name} onMouseOver={() => setActiveSuggestionIndex(index)}>
-                            <Suggestion suggestion={suggestion} isActive={index === activeSuggestionIndex} />
+                            <Suggestion
+                                suggestion={suggestion}
+                                isActive={index === activeSuggestionIndex}
+                                onClick={() => onSuggestionSelect(suggestion)}
+                            />
                         </div>
                     ))}
                 </ul>
