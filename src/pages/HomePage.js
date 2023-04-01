@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } fro
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
 import storyOpen from "../components/Map/storyOpen";
+import Locations from "./locations";
+import * as L from "leaflet";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 
 function LocationMarker() {
@@ -25,6 +27,16 @@ function LocationMarker() {
     );
 }
 
+function MultipleMarkers(){
+  return Locations.location.map((x) => {
+    let position = L.latLng(x['lat'], x['lng'])
+    return (
+      <Marker position={position} icon={storyClosed}>
+            <Popup>Marker</Popup>
+      </Marker>
+    )
+  })
+}
 
 
 
@@ -52,6 +64,7 @@ const HomePage = () => {
                 <Marker icon={icon} position={[50.62984, 4.86382]} onClick={() => changeIcon()}>
                     <Popup>A Story</Popup>
                 </Marker>
+                <MultipleMarkers />
             </MapContainer>
         </div>
     );
