@@ -30,12 +30,13 @@ const handleClick = () => {
 const HomePage = () => {
     return (
         <div>
-            {/* <SideBar /> */}
+            <SideBar />
             <MapContainer
               className="map-container"
               center={[50.8476, 4.3572]}
               zoom={8}
-              scrollWheelZoom={false}>
+              scrollWheelZoom={false}
+              zoomControl={false}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
