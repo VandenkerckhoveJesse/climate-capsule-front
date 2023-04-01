@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
 import storyOpen from "../components/Map/storyOpen";
 import Locations from "./locations";
-import * as L from "leaflet";
-import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 import { usePlaces } from "../hooks/usePlaces";
 
 function LocationMarker() {
@@ -27,22 +25,28 @@ function LocationMarker() {
         </Marker>
     );
 }
-
-function MultipleMarkers() {
-    return Locations.location.map(x => {
-        let position = L.latLng(x["lat"], x["lng"]);
-        return (
-            <Marker position={position} icon={storyClosed}>
-                <Popup>Marker</Popup>
-            </Marker>
-        );
-    });
-}
-
 const DEFAULT_FILTERS = {
     searchPlace: "",
     searchRadius: 1,
 };
+
+function MultipleMarkers({ onMarkerClick }) {
+    return Locations.location.map(x => <Markers place={x} markerClick={onMarkerClick} />);
+}
+
+function Markers({ place, markerClick }) {
+    const eventHandlers = {
+        click() {
+            markerClick(place);
+        },
+    };
+
+    return (
+        <Marker position={place} icon={storyClosed} eventHandlers={eventHandlers}>
+            <Popup>Marker</Popup>
+        </Marker>
+    );
+}
 
 const HomePage = () => {
     const [icon, setIcon] = useState(storyClosed);
@@ -98,7 +102,7 @@ const HomePage = () => {
                 <Marker icon={icon} position={[50.62984, 4.86382]} onClick={() => changeIcon()}>
                     <Popup>A Story</Popup>
                 </Marker>
-                <MultipleMarkers />
+                <MultipleMarkers onMarkerClick={handlePlaceSelect} />
             </MapContainer>
         </div>
     );
