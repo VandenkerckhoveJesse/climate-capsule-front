@@ -1,8 +1,12 @@
+import styles from "./sidebar.module.css";
+
 const PlaceDetailsView = ({ selectedPlace, onGoBack }) => {
     return (
-        <div>
+        <div style={styles.detailsContainer}>
+            <button onClick={onGoBack} style={{ fontWeight: "bolder" }}>
+                {"<---"}
+            </button>
             <h1>{selectedPlace.name}</h1>
-            <button onClick={onGoBack}>go back</button>
         </div>
     );
 };
