@@ -1,16 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
-import storyOpen from "../components/Map/storyOpen";
 import { usePlaces } from "../hooks/usePlaces";
+import redLocator from "../components/Map/RedMarker";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
     const map = useMapEvents({
-        click() {
-            map.locate();
-        },
         locationfound(e) {
             setPosition(e.latlng);
             map.setZoom(13);
@@ -18,12 +15,33 @@ function LocationMarker() {
         },
     });
 
+    useEffect(() => {
+        map.locate();
+    }, [map]);
+
     return position === null ? null : (
         <Marker position={position}>
             <Popup>Current Location</Popup>
         </Marker>
     );
 }
+
+const SelectedLocationMarker = ({ selectedLocation, setSelectedLocation }) => {
+    const map = useMapEvents({
+        click(e) {
+            map.setZoom(13);
+            setSelectedLocation(e.latlng);
+            map.flyTo(e.latlng);
+        },
+    });
+
+    return selectedLocation === null ? null : (
+        <Marker position={selectedLocation} icon={redLocator}>
+            <Popup>Selected Location</Popup>
+        </Marker>
+    );
+};
+
 const DEFAULT_FILTERS = {
     searchPlace: "",
     searchRadius: 1,
@@ -48,13 +66,11 @@ function SingleMarker({ place, onMarkerClick }) {
 }
 
 const HomePage = () => {
-    const [icon, setIcon] = useState(storyClosed);
-    const changeIcon = () => {
-        setIcon(storyOpen);
-    };
-
     const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
     const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
+
+    const [isAddStoryMode, setIsAddStoryMode] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState(null);
 
     const [selectedPlace, setSelectedPlace] = useState(null);
 
@@ -85,6 +101,10 @@ const HomePage = () => {
                 onPlaceSelect={handlePlaceSelect}
                 onGoBackToSearch={handleGoBackToSearch}
                 selectedPlace={selectedPlace}
+                isAddStoryMode={isAddStoryMode}
+                setIsAddStoryMode={setIsAddStoryMode}
+                selectedLocation={selectedLocation}
+                setSelectedLocation={setSelectedLocation}
             />
             <MapContainer
                 className="map-container"
@@ -97,7 +117,13 @@ const HomePage = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <LocationMarker />
+                <LocationMarker isAddStoryMode={isAddStoryMode} onLocationSelected={setSelectedLocation} />
+                {isAddStoryMode && (
+                    <SelectedLocationMarker
+                        selectedLocation={selectedLocation}
+                        setSelectedLocation={setSelectedLocation}
+                    />
+                )}
                 {places && <MultipleMarkers places={places} onMarkerClick={handlePlaceSelect} />}
             </MapContainer>
         </div>
