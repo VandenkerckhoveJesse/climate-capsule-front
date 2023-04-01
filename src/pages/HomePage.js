@@ -32,14 +32,11 @@ function MultipleMarkers(){
     let position = L.latLng(x['lat'], x['lng'])
     return (
       <Marker position={position} icon={storyClosed}>
-            <Popup>Marker</Popup>
+        <Popup>Marker</Popup>
       </Marker>
     )
   })
 }
-
-
-
 
 const HomePage = () => {
   const [icon, setIcon] = useState(storyClosed)
