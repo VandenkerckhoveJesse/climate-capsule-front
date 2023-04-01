@@ -4,19 +4,20 @@ import PlaceDetailsView from "./PlaceDetailsView";
 import NewStory from "./NewStory";
 
 const SideBar = ({
-    filteredPlaces,
-    isFilteredPlacesLoading,
-    filteredPlacesError,
+    filteredStories,
+    isFilteredStoriesLoading,
+    filteredStoriesError,
     searchPlace,
     setSearchPlace,
     searchRadius,
     setSearchRadius,
     selectedPlace,
-    onPlaceSelect,
+    onStorySelect,
     onGoBackToSearch,
     isAddStoryMode,
     setIsAddStoryMode,
     selectedLocation,
+    handleAddNewStory,
 }) => {
     return (
         <div className={styles.container}>
@@ -26,19 +27,19 @@ const SideBar = ({
                 <NewStory
                     selectedLocation={selectedLocation}
                     onCancel={() => setIsAddStoryMode(false)}
-                    onSubmit={newStory => alert(JSON.stringify(newStory))}
+                    onSubmit={handleAddNewStory}
                 />
             ) : (
                 <SearchView
                     {...{
-                        places: filteredPlaces,
-                        isPlacesLoading: isFilteredPlacesLoading,
-                        placesError: filteredPlacesError,
+                        stories: filteredStories,
+                        isStoriesLoading: isFilteredStoriesLoading,
+                        storiesError: filteredStoriesError,
                         searchPlace,
                         setSearchPlace,
                         searchRadius,
                         setSearchRadius,
-                        onPlaceSelect,
+                        onStorySelect,
                         onAddClicked: () => setIsAddStoryMode(true),
                     }}
                 />

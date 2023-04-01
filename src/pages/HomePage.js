@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
-import { usePlaces, useFilteredPlaces } from "../hooks/usePlaces";
+import { useStories, useFilteredStories } from "../hooks/useStories";
 import redLocator from "../components/Map/RedMarker";
 
 function LocationMarker() {
@@ -48,19 +48,19 @@ const DEFAULT_FILTERS = {
     searchRadius: 1,
 };
 
-function MultipleMarkers({ places, onMarkerClick }) {
-    return places.map(place => <SingleMarker place={place} onMarkerClick={onMarkerClick} />);
+function MultipleMarkers({ stories, onMarkerClick }) {
+    return stories.map(story => <SingleMarker story={story} onMarkerClick={onMarkerClick} />);
 }
 
-function SingleMarker({ place, onMarkerClick }) {
+function SingleMarker({ story, onMarkerClick }) {
     const eventHandlers = {
         click() {
-            onMarkerClick(place);
+            onMarkerClick(story);
         },
     };
 
     return (
-        <Marker position={place.location} icon={storyClosed} eventHandlers={eventHandlers}>
+        <Marker position={story.location} icon={storyClosed} eventHandlers={eventHandlers}>
             <Popup>Marker</Popup>
         </Marker>
     );
@@ -75,18 +75,19 @@ const HomePage = () => {
 
     const [selectedPlace, setSelectedPlace] = useState(null);
 
-    const { places } = usePlaces();
+    const { stories, addStory } = useStories();
 
     const {
-        filteredPlaces,
-        isLoading: isFilteredPlacesLoading,
-        error: filteredPlacesError,
-    } = useFilteredPlaces({
+        filteredStories,
+        isLoading: isFilteredStoriesLoading,
+        error: filteredStoriesError,
+        revalidate: revalidateFilteredStories,
+    } = useFilteredStories({
         place: searchPlace,
         radius: searchRadius,
     });
 
-    const handlePlaceSelect = place => {
+    const handleStorySelect = place => {
         // we can here do something with the selected place,
         // for example, move the map to the place location
         setSelectedPlace(place);
@@ -96,6 +97,11 @@ const HomePage = () => {
         setSelectedPlace(null);
     };
 
+    const handleAddNewStory = async newStory => {
+        await addStory(newStory);
+        await revalidateFilteredStories();
+    };
+
     return (
         <div>
             <SideBar
@@ -103,16 +109,17 @@ const HomePage = () => {
                 setSearchPlace={setSearchPlace}
                 searchRadius={searchRadius}
                 setSearchRadius={setSearchRadius}
-                filteredPlaces={filteredPlaces}
-                isFilteredPlacesLoading={isFilteredPlacesLoading}
-                filteredPlacesError={filteredPlacesError}
-                onPlaceSelect={handlePlaceSelect}
+                filteredStories={filteredStories}
+                isFilteredStoriesLoading={isFilteredStoriesLoading}
+                filteredStoriesError={filteredStoriesError}
+                onStorySelect={handleStorySelect}
                 onGoBackToSearch={handleGoBackToSearch}
                 selectedPlace={selectedPlace}
                 isAddStoryMode={isAddStoryMode}
                 setIsAddStoryMode={setIsAddStoryMode}
                 selectedLocation={selectedLocation}
                 setSelectedLocation={setSelectedLocation}
+                handleAddNewStory={handleAddNewStory}
             />
             <MapContainer
                 className="map-container"
@@ -132,7 +139,7 @@ const HomePage = () => {
                         setSelectedLocation={setSelectedLocation}
                     />
                 )}
-                {places && <MultipleMarkers places={places} onMarkerClick={handlePlaceSelect} />}
+                {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
             </MapContainer>
         </div>
     );
