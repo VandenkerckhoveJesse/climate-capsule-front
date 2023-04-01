@@ -6,13 +6,13 @@
     font-size: 16px;
 }
 
-.suggestionsList {
+.pacesList {
     padding: 0;
     overflow-y: auto;
     flex: 1;
 }
 
-.suggestion {
+.place {
     display: flex;
     align-items: center;
     height: 52px;
@@ -20,11 +20,11 @@
     cursor: pointer;
 }
 
-.suggestion.active {
+.place.active {
     background-color: #e5e5e5;
 }
 
-.emptySuggestions {
+.emptyPlaces {
     display: flex;
     align-items: center;
     justify-content: center;

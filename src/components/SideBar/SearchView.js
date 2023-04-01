@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useEvent } from "react-use";
 import clsx from "clsx";
 
-const Suggestion = ({ isActive, suggestion, onClick }) => {
+const PlaceItem = ({ isActive, place, onClick }) => {
     const autoScrollRefCallback = useCallback(
         node => {
             if (node !== null && isActive) {
@@ -14,47 +14,44 @@ const Suggestion = ({ isActive, suggestion, onClick }) => {
     );
 
     return (
-        <li
-            ref={autoScrollRefCallback}
-            className={clsx(styles.suggestion, isActive && styles.active)}
-            onClick={onClick}>
-            {suggestion.name}
+        <li ref={autoScrollRefCallback} className={clsx(styles.place, isActive && styles.active)} onClick={onClick}>
+            {place.title}
         </li>
     );
 };
 
 const SearchView = ({
-    suggestions,
+    places,
     isLoading,
     searchPlace,
     setSearchPlace,
     searchRadius,
     setSearchRadius,
-    onSuggestionSelect,
+    onPlaceSelect,
 }) => {
-    const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+    const [activePlaceIndex, setActivePlaceIndex] = useState(-1);
 
     useEvent("keydown", event => {
-        if (!suggestions) return;
+        if (!places) return;
 
-        // navigate the suggestions with arrow keys
+        // navigate the places with arrow keys
         if (event.key === "ArrowDown") {
-            setActiveSuggestionIndex((activeSuggestionIndex + 1) % suggestions.length);
+            setActivePlaceIndex((activePlaceIndex + 1) % places.length);
         } else if (event.key === "ArrowUp") {
-            setActiveSuggestionIndex((activeSuggestionIndex - 1 + suggestions.length) % suggestions.length);
+            setActivePlaceIndex((activePlaceIndex - 1 + places.length) % places.length);
         } else if (event.key === "Enter") {
-            onSuggestionSelect(suggestions[activeSuggestionIndex]);
+            onPlaceSelect(places[activePlaceIndex]);
         }
     });
 
     const handleSearchTextChange = event => {
         setSearchPlace(event.target.value);
-        setActiveSuggestionIndex(-1);
+        setActivePlaceIndex(-1);
     };
 
     const handleInputKeyDown = event => {
-        const isSuggestionNavigationKey = ["ArrowDown", "ArrowUp", "Enter"].includes(event.key);
-        if (isSuggestionNavigationKey) event.preventDefault();
+        const isPlacesNavigationKey = ["ArrowDown", "ArrowUp", "Enter"].includes(event.key);
+        if (isPlacesNavigationKey) event.preventDefault();
     };
 
     return (
@@ -79,20 +76,20 @@ const SearchView = ({
             />
             {isLoading ? (
                 <div className={styles.loading}>Loading...</div>
-            ) : suggestions.length > 0 ? (
-                <ul className={styles.suggestionsList}>
-                    {suggestions.map((suggestion, index) => (
-                        <div key={suggestion.name} onMouseOver={() => setActiveSuggestionIndex(index)}>
-                            <Suggestion
-                                suggestion={suggestion}
-                                isActive={index === activeSuggestionIndex}
-                                onClick={() => onSuggestionSelect(suggestion)}
+            ) : places.length > 0 ? (
+                <ul className={styles.pacesList}>
+                    {places.map((place, index) => (
+                        <div key={place.name} onMouseOver={() => setActivePlaceIndex(index)}>
+                            <PlaceItem
+                                place={place}
+                                isActive={index === activePlaceIndex}
+                                onClick={() => onPlaceSelect(place)}
                             />
                         </div>
                     ))}
                 </ul>
             ) : (
-                <div className={styles.emptySuggestions}>No suggestions</div>
+                <div className={styles.emptyPlaces}>No places</div>
             )}
         </>
     );

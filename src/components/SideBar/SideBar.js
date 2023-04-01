@@ -3,14 +3,14 @@ import SearchView from "./SearchView";
 import PlaceDetailsView from "./PlaceDetailsView";
 
 const SideBar = ({
-    suggestions,
+    places,
     isLoading,
     searchPlace,
     setSearchPlace,
     searchRadius,
     setSearchRadius,
     selectedPlace,
-    onSuggestionSelect,
+    onPlaceSelect,
     onGoBackToSearch,
 }) => {
     return (
@@ -18,13 +18,13 @@ const SideBar = ({
             {!selectedPlace ? (
                 <SearchView
                     {...{
-                        suggestions,
+                        places,
                         isLoading,
                         searchPlace,
                         setSearchPlace,
                         searchRadius,
                         setSearchRadius,
-                        onSuggestionSelect,
+                        onPlaceSelect,
                     }}
                 />
             ) : (
