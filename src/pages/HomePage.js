@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } fro
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
 import storyOpen from "../components/Map/storyOpen";
-import Locations from "./locations";
 import { usePlaces } from "../hooks/usePlaces";
 
 function LocationMarker() {
