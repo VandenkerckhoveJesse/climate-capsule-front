@@ -49,11 +49,6 @@ function SingleMarker({ place, onMarkerClick }) {
 }
 
 const HomePage = () => {
-    const [icon, setIcon] = useState(storyClosed);
-    const changeIcon = () => {
-        setIcon(storyOpen);
-    };
-
     const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
     const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
 
