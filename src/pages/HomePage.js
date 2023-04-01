@@ -30,10 +30,14 @@ const HomePage = () => {
     const [searchPlace, setSearchPlace] = useState("");
     const [searchRadius, setSearchRadius] = useState(1);
 
+    const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+
     const { suggestions, isLoading } = useSuggestions({
         place: searchPlace,
         radius: searchRadius,
     });
+
+    const selectedPlace = suggestions?.[activeSuggestionIndex];
 
     return (
         <div>
@@ -43,6 +47,8 @@ const HomePage = () => {
                 suggestions={suggestions}
                 isLoading={isLoading}
                 onSuggestionSelect={suggestion => alert(suggestion.name)}
+                activeSuggestionIndex={activeSuggestionIndex}
+                setActiveSuggestionIndex={setActiveSuggestionIndex}
             />
             <MapContainer
                 className="map-container"

@@ -32,12 +32,18 @@ const Suggestion = ({ isActive, suggestion, onClick }) => {
     );
 };
 
-const SideBar = ({ suggestions, isLoading, setSearchPlace, setSearchRadius, onSuggestionSelect }) => {
-    const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
-
+const SideBar = ({
+    suggestions,
+    isLoading,
+    setSearchPlace,
+    setSearchRadius,
+    onSuggestionSelect,
+    activeSuggestionIndex,
+    setActiveSuggestionIndex,
+}) => {
     const handleSearchTextChange = event => {
         setSearchPlace(event.target.value);
-        setActiveSuggestionIndex(0);
+        setActiveSuggestionIndex(-1);
     };
 
     const handleInputKeyDown = event => {
