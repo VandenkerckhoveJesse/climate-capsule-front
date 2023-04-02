@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup, Polyline } from "react-leaflet";
+import { MapContainer, Marker, Polyline, Popup, TileLayer, useMapEvents, ZoomControl } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
 import { useAdventure } from "../hooks/useAdventure";
-import { useStories, useFilteredStories } from "../hooks/useStories";
+import { useFilteredStories, useStories } from "../hooks/useStories";
 import redLocator from "../components/Map/RedMarker";
 
 function LocationMarker() {
@@ -43,11 +43,6 @@ const SelectedLocationMarker = ({ selectedLocation, setSelectedLocation }) => {
     );
 };
 
-const DEFAULT_FILTERS = {
-    searchPlace: "",
-    searchRadius: 1,
-};
-
 function MultipleMarkers({ stories, onMarkerClick }) {
     return stories.map(story => <SingleMarker story={story} onMarkerClick={onMarkerClick} />);
 }
@@ -69,8 +64,8 @@ function SingleMarker({ story, onMarkerClick }) {
 const HomePage = () => {
     const [map, setMap] = useState(null);
 
-    const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
-    const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
+    const [searchPlace, setSearchPlace] = useState("");
+    const [searchRadius, setSearchRadius] = useState(5);
     const [isAddStoryMode, setIsAddStoryMode] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
 
