@@ -24,7 +24,7 @@ const Book = ({ story, isOpen, setIsOpen }) => {
                 <CModalTitle>{story.title}</CModalTitle>
             </CModalHeader>
             <CModalBody>
-                <CCarousel dark interval={false} controls style={{ height: "100%" }}>
+                <CCarousel dark indicators interval={false} controls style={{ height: "100%" }}>
                     {story.book.pages.map(page => (
                         <CCarouselItem key={page.type + page.content} style={{ height: "100%" }}>
                             <div className={styles.pageContainer}>{renderPage(page)}</div>

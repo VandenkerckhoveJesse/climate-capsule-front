@@ -67,16 +67,23 @@ const SearchView = ({
                 onChange={handleSearchTextChange}
                 value={searchPlace}
             />
-            <input
-                type={"number"}
-                min={1}
-                className={styles.input}
-                placeholder={"radius in KM (default 1)"}
-                onKeyDown={handleInputKeyDown}
-                value={searchRadius}
-                onChange={event => setSearchRadius(Number(event.target.value) || 1)}
-            />
-            <div style={{ flex: 1, marginTop: 16 }}>
+            <div style={{ margin: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <label htmlFor="radius" style={{}}>
+                    Radius (KM):
+                </label>
+                <input
+                    id={"radius"}
+                    type={"number"}
+                    min={1}
+                    style={{ margin: 0 }}
+                    className={styles.input}
+                    placeholder={"radius in KM (default 1)"}
+                    onKeyDown={handleInputKeyDown}
+                    value={searchRadius}
+                    onChange={event => setSearchRadius(Number(event.target.value) || 1)}
+                />
+            </div>
+            <div style={{ flex: 1, marginTop: 12 }}>
                 {storiesError ? (
                     <div className={styles.error}>Place not found</div>
                 ) : isStoriesLoading ? (
