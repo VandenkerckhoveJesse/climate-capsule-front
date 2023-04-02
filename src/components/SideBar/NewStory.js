@@ -5,6 +5,7 @@ const defaultPage = { type: "TEXT", content: "" };
 
 export default function NewStory({ selectedLocation, onSubmit, onCancel }) {
     const [title, setTitle] = useState("");
+    const [summary, setSummary] = useState("");
     const [author, setAuthor] = useState("");
     const [date, setDate] = useState("");
     const [pages, setPages] = useState([defaultPage]);
@@ -52,6 +53,10 @@ export default function NewStory({ selectedLocation, onSubmit, onCancel }) {
                     <input type="text" name="title" value={title} onChange={evt => setTitle(evt.target.value)} />
                 </div>
                 <div className={styles.row}>
+                    <label htmlFor="summary">Summary:</label>
+                    <input type="text" name="summary" value={summary} onChange={evt => setSummary(evt.target.value)} />
+                </div>
+                <div className={styles.row}>
                     <label htmlFor="date">Date:</label>
                     <input type="date" name="date" value={date} onChange={evt => setDate(evt.target.value)} />
                 </div>
@@ -74,7 +79,7 @@ export default function NewStory({ selectedLocation, onSubmit, onCancel }) {
             </div>
             <div style={{ display: "flex", alignItems: "center", columnGap: 12 }}>
                 <button onClick={onCancel}>Cancel</button>
-                <button onClick={() => onSubmit({ author, title, date, pages, location: selectedLocation })}>
+                <button onClick={() => onSubmit({ author, title, summary, date, pages, location: selectedLocation })}>
                     Submit
                 </button>
             </div>
