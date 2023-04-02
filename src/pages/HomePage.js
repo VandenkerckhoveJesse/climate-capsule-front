@@ -84,9 +84,9 @@ const HomePage = () => {
         radius: searchRadius,
     });
 
-    const handleStorySelect = place => {
-        setSelectedStory(place);
-        selectLocation(place.location);
+    const selectStory = story => {
+        setSelectedStory(story);
+        selectLocation(story.location);
     };
 
     const selectLocation = useCallback(
@@ -108,11 +108,14 @@ const HomePage = () => {
 
     const handleGoBackToSearch = () => {
         setSelectedStory(null);
+        setSelectedLocation(null);
         map.locate();
     };
 
     const handleAddNewStory = async newStory => {
         await addStory(newStory);
+        setIsAddStoryMode(false);
+        selectStory(newStory);
         await revalidateFilteredStories();
     };
 
@@ -126,7 +129,7 @@ const HomePage = () => {
                 filteredStories={filteredStories}
                 isFilteredStoriesLoading={isFilteredStoriesLoading}
                 filteredStoriesError={filteredStoriesError}
-                onStorySelect={handleStorySelect}
+                onStorySelect={selectStory}
                 onGoBackToSearch={handleGoBackToSearch}
                 selectedStory={selectedStory}
                 isAddStoryMode={isAddStoryMode}
@@ -149,7 +152,7 @@ const HomePage = () => {
                 />
                 <LocationMarker />
                 <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
-                {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
+                {stories && <MultipleMarkers stories={stories} onMarkerClick={selectStory} />}
                 {loadingAdventure ? (
                     <div>Loading...</div>
                 ) : (

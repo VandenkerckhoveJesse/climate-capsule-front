@@ -36,8 +36,6 @@ export const useFilteredStories = ({ place, radius }) => {
         return fetch(url).then(res => res.json());
     });
 
-    console.log("filtered", data ?? []);
-
     return {
         filteredStories: data?.stories ?? [],
         location: data?.location ?? null,
