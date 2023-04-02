@@ -28,17 +28,17 @@ function LocationMarker() {
     );
 }
 
-const SelectedLocationMarker = ({ selectedLocation, setSelectedLocation }) => {
+const SelectedLocationMarker = ({ name, location, setLocation }) => {
     const map = useMapEvents({
         click(event) {
-            setSelectedLocation(event.latlng);
+            setLocation(event.latlng);
             map.flyTo(event.latlng);
         },
     });
 
-    return selectedLocation === null ? null : (
-        <Marker position={selectedLocation} icon={redLocator}>
-            <Popup>Selected Location</Popup>
+    return location === null ? null : (
+        <Marker position={location} icon={redLocator}>
+            {name && <Popup>{name}</Popup>}
         </Marker>
     );
 };
@@ -151,7 +151,14 @@ const HomePage = () => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <LocationMarker />
-                <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
+                <SelectedLocationMarker
+                    name={selectedStory?.title}
+                    location={selectedLocation}
+                    setLocation={location => {
+                        setSelectedLocation(location);
+                        if (selectedStory) setSelectedStory(null);
+                    }}
+                />
                 {stories && <MultipleMarkers stories={stories} onMarkerClick={selectStory} />}
                 {loadingAdventure ? (
                     <div>Loading...</div>
