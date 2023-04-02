@@ -1,0 +1,7 @@
+.adventure {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  position: relative;
+  z-index: 1000;
+}
