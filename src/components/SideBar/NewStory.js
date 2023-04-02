@@ -79,7 +79,10 @@ export default function NewStory({ selectedLocation, onSubmit, onCancel }) {
             </div>
             <div style={{ display: "flex", alignItems: "center", columnGap: 12 }}>
                 <button onClick={onCancel}>Cancel</button>
-                <button onClick={() => onSubmit({ author, title, summary, date, pages, location: selectedLocation })}>
+                <button
+                    onClick={() =>
+                        onSubmit({ author, title, summary, date, book: { pages }, location: selectedLocation })
+                    }>
                     Submit
                 </button>
             </div>

@@ -37,7 +37,8 @@ export const useFilteredStories = ({ place, radius }) => {
     });
 
     return {
-        filteredStories: data ?? [],
+        filteredStories: data?.stories ?? [],
+        location: data?.location ?? null,
         isLoading: !data && !error,
         error,
         revalidate: () => mutate(),
