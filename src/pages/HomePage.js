@@ -5,7 +5,6 @@ import storyClosed from "../components/Map/storyClosed";
 import { useAdventure } from "../hooks/useAdventure";
 import { useStories, useFilteredStories } from "../hooks/useStories";
 import redLocator from "../components/Map/RedMarker";
-import StartAdventure from "../components/Adventure/StartAdventure";
 import styles from "./HomePage.module.css";
 
 
@@ -95,8 +94,10 @@ const HomePage = () => {
     const { adventure, isLoading: loadingAdventure } = useAdventure({});
     const greenOptions = { color: "red" };
 
-    function setAdventure() {
+    function setAdventure(adventure) {
       setIsAdventure(true)
+      console.log(adventure.path)
+      // map.setView(adventure.path, 13, { animate: true })
     }
 
 
