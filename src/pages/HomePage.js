@@ -76,6 +76,7 @@ const HomePage = () => {
     const [isAddStoryMode, setIsAddStoryMode] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [isAdventure, setIsAdventure] = useState(false)
+    const [adventure, setAdventure] = useState(null)
 
     const [selectedStory, setSelectedStory] = useState(null);
 
@@ -91,15 +92,15 @@ const HomePage = () => {
         radius: searchRadius,
     });
 
-    const { adventure, isLoading: loadingAdventure } = useAdventure({});
+    // const { adventure, isLoading: loadingAdventure } = useAdventure({});
     const greenOptions = { color: "red" };
 
-    function setAdventure(adventure) {
-      setIsAdventure(true)
-      console.log(adventure.path)
-      // map.setView(adventure.path, 13, { animate: true })
+    const onAdventureClick = () => {
+      fetch("http://139.162.167.224:3000/adventures/new").then(res => res.json()).then(result => {
+        map.setView(result.path.coordinates[0], 13, { animate: true });
+        setAdventure(result)
+      })
     }
-
 
     const handleStorySelect = place => {
         setSelectedStory(place);
@@ -140,7 +141,7 @@ const HomePage = () => {
                 setSelectedLocation={setSelectedLocation}
                 handleAddNewStory={handleAddNewStory}
             />
-            <div className={styles.adventure} onClick={setAdventure}><button>Start Adventure</button></div>
+            <div className={styles.adventure} onClick={onAdventureClick}><button>Start Adventure</button></div>
             <MapContainer
                 ref={setMap}
                 className="map-container"
@@ -153,17 +154,7 @@ const HomePage = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-                {!isAdventure ? (
-                  <div></div>
-                ) : (
-                <div>
-                  {loadingAdventure ? (
-                      <div>Loading...</div>
-                  ) : (
-                      <Polyline pathOptions={greenOptions} positions={adventure.path.coordinates} />
-                  )}
-                </div>
-                )}
+                {adventure && <Polyline pathOptions={greenOptions} positions={adventure.path.coordinates} />}
                 <LocationMarker isAddStoryMode={isAddStoryMode} onLocationSelected={handleLocationSelected} />
                 <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
                 {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
