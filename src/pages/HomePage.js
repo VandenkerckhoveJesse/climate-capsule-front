@@ -1,17 +1,15 @@
-import { useState } from "react";
-import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
+import { useCallback, useEffect, useState } from "react";
+import { MapContainer, Marker, Polyline, Popup, TileLayer, useMapEvents, ZoomControl } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
-import storyOpen from "../components/Map/storyOpen";
-import Locations from "./locations";
-import { usePlaces } from "../hooks/usePlaces";
+import { useAdventure } from "../hooks/useAdventure";
+import { useFilteredStories, useStories } from "../hooks/useStories";
+import redLocator from "../components/Map/RedMarker";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
+
     const map = useMapEvents({
-        click() {
-            map.locate();
-        },
         locationfound(e) {
             setPosition(e.latlng);
             map.setZoom(13);
@@ -19,59 +17,103 @@ function LocationMarker() {
         },
     });
 
+    useEffect(() => {
+        map.locate();
+    }, [map]);
+
     return position === null ? null : (
         <Marker position={position}>
             <Popup>Current Location</Popup>
         </Marker>
     );
 }
-const DEFAULT_FILTERS = {
-    searchPlace: "",
-    searchRadius: 1,
+
+const SelectedLocationMarker = ({ selectedLocation, setSelectedLocation }) => {
+    const map = useMapEvents({
+        click(event) {
+            setSelectedLocation(event.latlng);
+            map.flyTo(event.latlng);
+        },
+    });
+
+    return selectedLocation === null ? null : (
+        <Marker position={selectedLocation} icon={redLocator}>
+            <Popup>Selected Location</Popup>
+        </Marker>
+    );
 };
 
-function MultipleMarkers({ places, onMarkerClick }) {
-    return places.map(place => <SingleMarker place={place} onMarkerClick={onMarkerClick} />);
+function MultipleMarkers({ stories, onMarkerClick }) {
+    return stories.map(story => <SingleMarker story={story} onMarkerClick={onMarkerClick} />);
 }
 
-function SingleMarker({ place, onMarkerClick }) {
+function SingleMarker({ story, onMarkerClick }) {
     const eventHandlers = {
         click() {
-            onMarkerClick(place);
+            onMarkerClick(story);
         },
     };
 
     return (
-        <Marker position={place.location} icon={storyClosed} eventHandlers={eventHandlers}>
+        <Marker position={story.location} icon={storyClosed} eventHandlers={eventHandlers}>
             <Popup>Marker</Popup>
         </Marker>
     );
 }
 
 const HomePage = () => {
-    const [icon, setIcon] = useState(storyClosed);
-    const changeIcon = () => {
-        setIcon(storyOpen);
-    };
+    const [map, setMap] = useState(null);
 
-    const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
-    const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
+    const [searchPlace, setSearchPlace] = useState("");
+    const [searchRadius, setSearchRadius] = useState(5);
+    const [isAddStoryMode, setIsAddStoryMode] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState(null);
 
-    const [selectedPlace, setSelectedPlace] = useState(null);
+    const [selectedStory, setSelectedStory] = useState(null);
 
-    const { places, isLoading } = usePlaces({
+    const { stories, addStory } = useStories();
+
+    const {
+        filteredStories,
+        location: searchPlaceLocation,
+        isLoading: isFilteredStoriesLoading,
+        error: filteredStoriesError,
+        revalidate: revalidateFilteredStories,
+    } = useFilteredStories({
         place: searchPlace,
         radius: searchRadius,
     });
 
-    const handlePlaceSelect = place => {
-        // we can here do something with the selected place,
-        // for example, move the map to the place location
-        setSelectedPlace(place);
+    const handleStorySelect = place => {
+        setSelectedStory(place);
+        selectLocation(place.location);
     };
 
+    const selectLocation = useCallback(
+        location => {
+            setSelectedLocation(location);
+            map.setView(location, 13, { animate: true });
+        },
+        [map]
+    );
+
+    useEffect(() => {
+        if (searchPlaceLocation) {
+            selectLocation(searchPlaceLocation);
+        }
+    }, [searchPlaceLocation, selectLocation]);
+
+    const { adventure, isLoading: loadingAdventure } = useAdventure({});
+    const greenOptions = { color: "red" };
+
     const handleGoBackToSearch = () => {
-        setSelectedPlace(null);
+        setSelectedStory(null);
+        map.locate();
+    };
+
+    const handleAddNewStory = async newStory => {
+        await addStory(newStory);
+        await revalidateFilteredStories();
     };
 
     return (
@@ -81,13 +123,20 @@ const HomePage = () => {
                 setSearchPlace={setSearchPlace}
                 searchRadius={searchRadius}
                 setSearchRadius={setSearchRadius}
-                places={places}
-                isLoading={isLoading}
-                onPlaceSelect={handlePlaceSelect}
+                filteredStories={filteredStories}
+                isFilteredStoriesLoading={isFilteredStoriesLoading}
+                filteredStoriesError={filteredStoriesError}
+                onStorySelect={handleStorySelect}
                 onGoBackToSearch={handleGoBackToSearch}
-                selectedPlace={selectedPlace}
+                selectedStory={selectedStory}
+                isAddStoryMode={isAddStoryMode}
+                setIsAddStoryMode={setIsAddStoryMode}
+                selectedLocation={selectedLocation}
+                setSelectedLocation={setSelectedLocation}
+                handleAddNewStory={handleAddNewStory}
             />
             <MapContainer
+                ref={setMap}
                 className="map-container"
                 center={[50.8476, 4.3572]}
                 zoom={8}
@@ -99,7 +148,13 @@ const HomePage = () => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <LocationMarker />
-                {places && <MultipleMarkers places={places} onMarkerClick={handlePlaceSelect} />}
+                <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
+                {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
+                {loadingAdventure ? (
+                    <div>Loading...</div>
+                ) : (
+                    <Polyline pathOptions={greenOptions} positions={adventure.path.coordinates} />
+                )}
             </MapContainer>
         </div>
     );

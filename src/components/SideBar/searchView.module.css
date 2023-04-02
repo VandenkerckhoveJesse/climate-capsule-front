@@ -24,7 +24,7 @@
     background-color: #e5e5e5;
 }
 
-.emptyPlaces {
+.emptyStories {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,4 +35,10 @@
 
 .loading {
     margin: 16px;
+}
+
+.error {
+    margin: 16px;
+    font-size: 16px;
+    color: #f00;
 }
