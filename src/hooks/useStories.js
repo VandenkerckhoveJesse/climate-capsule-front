@@ -14,11 +14,11 @@ export const useStories = () => {
     const addStory = async newStory => {
         try {
             await mutate(oldStories => [...oldStories, newStory], { revalidate: false });
-            await fetch(`${SERVER_ADDRESS}/stories`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newStory),
-            });
+            // await fetch(`${SERVER_ADDRESS}/stories`, {
+            //     method: "POST",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify(newStory),
+            // });
             await globalMutate(isFilteredStoriesKey);
         } catch (error) {
             alert("error adding story");
@@ -36,8 +36,11 @@ export const useFilteredStories = ({ place, radius }) => {
         return fetch(url).then(res => res.json());
     });
 
+    console.log("filtered", data ?? []);
+
     return {
-        filteredStories: data ?? [],
+        filteredStories: data?.stories ?? [],
+        location: data?.location ?? null,
         isLoading: !data && !error,
         error,
         revalidate: () => mutate(),

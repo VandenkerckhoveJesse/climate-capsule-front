@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup, Polyline } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
@@ -80,6 +80,7 @@ const HomePage = () => {
 
     const {
         filteredStories,
+        location: searchPlaceLocation,
         isLoading: isFilteredStoriesLoading,
         error: filteredStoriesError,
         revalidate: revalidateFilteredStories,
@@ -88,14 +89,27 @@ const HomePage = () => {
         radius: searchRadius,
     });
 
-    const { adventure, isLoading: loadingAdventure } = useAdventure({});
-    const greenOptions = { color: "red" };
-
     const handleStorySelect = place => {
         setSelectedStory(place);
-        setSelectedLocation(place.location);
-        map.setView(place.location, 13, { animate: true });
+        selectLocation(place.location);
     };
+
+    const selectLocation = useCallback(
+        location => {
+            setSelectedLocation(location);
+            map.setView(location, 13, { animate: true });
+        },
+        [map]
+    );
+
+    useEffect(() => {
+        if (searchPlaceLocation) {
+            selectLocation(searchPlaceLocation);
+        }
+    }, [searchPlaceLocation, selectLocation]);
+
+    const { adventure, isLoading: loadingAdventure } = useAdventure({});
+    const greenOptions = { color: "red" };
 
     const handleGoBackToSearch = () => {
         setSelectedStory(null);
@@ -105,10 +119,6 @@ const HomePage = () => {
     const handleAddNewStory = async newStory => {
         await addStory(newStory);
         await revalidateFilteredStories();
-    };
-
-    const handleLocationSelected = location => {
-        setSelectedLocation(location);
     };
 
     return (
@@ -142,7 +152,7 @@ const HomePage = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <LocationMarker isAddStoryMode={isAddStoryMode} onLocationSelected={handleLocationSelected} />
+                <LocationMarker />
                 <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
                 {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
                 {loadingAdventure ? (

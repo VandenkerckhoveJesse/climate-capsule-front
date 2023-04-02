@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CCarousel, CCarouselItem, CModal, CModalBody, CModalHeader, CModalTitle } from "@coreui/react";
 import styles from "./storyDetailsView.module.css";
+import arrowBackIcon from "../../icons/arrow-back.png";
 
 const Book = ({ story, isOpen, setIsOpen }) => {
     const renderPage = page => {
@@ -41,8 +42,8 @@ const StoryDetailsView = ({ story, onGoBack }) => {
 
     return (
         <div className={styles.container}>
-            <button className={styles.goBack} onClick={onGoBack}>
-                {"<--- Go back"}
+            <button className={styles.goBackBtn} onClick={onGoBack}>
+                <img src={arrowBackIcon} alt={"go back"} />
             </button>
             <div className={styles.title}>{story.title}</div>
             <div className={styles.content}>{story.summary.slice(0, 1_200)}...</div>
