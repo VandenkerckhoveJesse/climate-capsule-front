@@ -30,7 +30,6 @@ function LocationMarker() {
 const SelectedLocationMarker = ({ selectedLocation, setSelectedLocation }) => {
     const map = useMapEvents({
         click(event) {
-            map.setZoom(13);
             setSelectedLocation(event.latlng);
             map.flyTo(event.latlng);
         },

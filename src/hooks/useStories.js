@@ -14,11 +14,11 @@ export const useStories = () => {
     const addStory = async newStory => {
         try {
             await mutate(oldStories => [...oldStories, newStory], { revalidate: false });
-            // await fetch(`${SERVER_ADDRESS}/stories`, {
-            //     method: "POST",
-            //     headers: { "Content-Type": "application/json" },
-            //     body: JSON.stringify(newStory),
-            // });
+            await fetch(`${SERVER_ADDRESS}/stories`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newStory),
+            });
             await globalMutate(isFilteredStoriesKey);
         } catch (error) {
             alert("error adding story");
