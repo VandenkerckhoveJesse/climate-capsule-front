@@ -91,7 +91,7 @@ const SearchView = ({
                 ) : stories.length > 0 ? (
                     <ul className={styles.pacesList}>
                         {stories.map((story, index) => (
-                            <div key={story.title} onMouseOver={() => setActiveStoryIndex(index)}>
+                            <div key={story._id} onMouseOver={() => setActiveStoryIndex(index)}>
                                 <StoryItem
                                     story={story}
                                     isActive={index === activeStoryIndex}

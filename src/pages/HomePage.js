@@ -5,6 +5,7 @@ import storyClosed from "../components/Map/storyClosed";
 import { useAdventure } from "../hooks/useAdventure";
 import { useFilteredStories, useStories } from "../hooks/useStories";
 import redLocator from "../components/Map/RedMarker";
+import styles from "./HomePage.module.css";
 
 function LocationMarker() {
     const [position, setPosition] = useState(null);
@@ -44,7 +45,7 @@ const SelectedLocationMarker = ({ name, location, setLocation }) => {
 };
 
 function MultipleMarkers({ stories, onMarkerClick }) {
-    return stories.map(story => <SingleMarker story={story} onMarkerClick={onMarkerClick} />);
+    return stories.map(story => <SingleMarker key={story._id} story={story} onMarkerClick={onMarkerClick} />);
 }
 
 function SingleMarker({ story, onMarkerClick }) {
@@ -68,6 +69,7 @@ const HomePage = () => {
     const [searchRadius, setSearchRadius] = useState(5);
     const [isAddStoryMode, setIsAddStoryMode] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const [adventure, setAdventure] = useState(null);
 
     const [selectedStory, setSelectedStory] = useState(null);
 
@@ -83,6 +85,18 @@ const HomePage = () => {
         place: searchPlace,
         radius: searchRadius,
     });
+
+    const onAdventureClick = () => {
+        const cityName = prompt("Please enter a city name");
+        const radius = prompt("Please enter a radius");
+
+        fetch(`http://139.162.167.224:3000/adventures/new?city=${cityName}&radius=${radius}`)
+            .then(res => res.json())
+            .then(result => {
+                map.setView(result.path.coordinates[0], 13, { animate: true });
+                setAdventure(result);
+            });
+    };
 
     const selectStory = story => {
         setSelectedStory(story);
@@ -103,7 +117,6 @@ const HomePage = () => {
         }
     }, [searchPlaceLocation, selectLocation]);
 
-    const { adventure, isLoading: loadingAdventure } = useAdventure({});
     const greenOptions = { color: "red" };
 
     const handleGoBackToSearch = () => {
@@ -138,6 +151,9 @@ const HomePage = () => {
                 setSelectedLocation={setSelectedLocation}
                 handleAddNewStory={handleAddNewStory}
             />
+            <div className={styles.adventure} onClick={onAdventureClick}>
+                <button>Start Adventure</button>
+            </div>
             <MapContainer
                 ref={setMap}
                 className="map-container"
@@ -160,11 +176,7 @@ const HomePage = () => {
                     }}
                 />
                 {stories && <MultipleMarkers stories={stories} onMarkerClick={selectStory} />}
-                {loadingAdventure ? (
-                    <div>Loading...</div>
-                ) : (
-                    <Polyline pathOptions={greenOptions} positions={adventure.path.coordinates} />
-                )}
+                {adventure && <Polyline pathOptions={greenOptions} positions={adventure.path.coordinates} />}
             </MapContainer>
         </div>
     );
