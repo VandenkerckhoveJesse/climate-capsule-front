@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents, ZoomControl, Marker, Popup, Polyline } from "react-leaflet";
 import SideBar from "../components/SideBar/SideBar";
 import storyClosed from "../components/Map/storyClosed";
+import { useAdventure } from "../hooks/useAdventure";
 import { useStories, useFilteredStories } from "../hooks/useStories";
 import redLocator from "../components/Map/RedMarker";
 
@@ -70,7 +71,6 @@ const HomePage = () => {
 
     const [searchPlace, setSearchPlace] = useState(DEFAULT_FILTERS.searchPlace);
     const [searchRadius, setSearchRadius] = useState(DEFAULT_FILTERS.searchRadius);
-
     const [isAddStoryMode, setIsAddStoryMode] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
 
@@ -87,6 +87,9 @@ const HomePage = () => {
         place: searchPlace,
         radius: searchRadius,
     });
+
+    const { adventure, isLoading: loadingAdventure } = useAdventure({});
+    const greenOptions = { color: "red" };
 
     const handleStorySelect = place => {
         setSelectedStory(place);
@@ -142,6 +145,11 @@ const HomePage = () => {
                 <LocationMarker isAddStoryMode={isAddStoryMode} onLocationSelected={handleLocationSelected} />
                 <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
                 {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
+                {loadingAdventure ? (
+                    <div>Loading...</div>
+                ) : (
+                    <Polyline pathOptions={greenOptions} positions={adventure.path.coordinates} />
+                )}
             </MapContainer>
         </div>
     );
