@@ -28,17 +28,17 @@ function LocationMarker() {
     );
 }
 
-const SelectedLocationMarker = ({ selectedLocation, setSelectedLocation }) => {
+const SelectedLocationMarker = ({ name, location, setLocation }) => {
     const map = useMapEvents({
         click(event) {
-            setSelectedLocation(event.latlng);
+            setLocation(event.latlng);
             map.flyTo(event.latlng);
         },
     });
 
-    return selectedLocation === null ? null : (
-        <Marker position={selectedLocation} icon={redLocator}>
-            <Popup>Selected Location</Popup>
+    return location === null ? null : (
+        <Marker position={location} icon={redLocator}>
+            {name && <Popup>{name}</Popup>}
         </Marker>
     );
 };
@@ -84,9 +84,9 @@ const HomePage = () => {
         radius: searchRadius,
     });
 
-    const handleStorySelect = place => {
-        setSelectedStory(place);
-        selectLocation(place.location);
+    const selectStory = story => {
+        setSelectedStory(story);
+        selectLocation(story.location);
     };
 
     const selectLocation = useCallback(
@@ -108,11 +108,14 @@ const HomePage = () => {
 
     const handleGoBackToSearch = () => {
         setSelectedStory(null);
+        setSelectedLocation(null);
         map.locate();
     };
 
     const handleAddNewStory = async newStory => {
         await addStory(newStory);
+        setIsAddStoryMode(false);
+        selectStory(newStory);
         await revalidateFilteredStories();
     };
 
@@ -126,7 +129,7 @@ const HomePage = () => {
                 filteredStories={filteredStories}
                 isFilteredStoriesLoading={isFilteredStoriesLoading}
                 filteredStoriesError={filteredStoriesError}
-                onStorySelect={handleStorySelect}
+                onStorySelect={selectStory}
                 onGoBackToSearch={handleGoBackToSearch}
                 selectedStory={selectedStory}
                 isAddStoryMode={isAddStoryMode}
@@ -148,8 +151,15 @@ const HomePage = () => {
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <LocationMarker />
-                <SelectedLocationMarker selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
-                {stories && <MultipleMarkers stories={stories} onMarkerClick={handleStorySelect} />}
+                <SelectedLocationMarker
+                    name={selectedStory?.title}
+                    location={selectedLocation}
+                    setLocation={location => {
+                        setSelectedLocation(location);
+                        if (selectedStory) setSelectedStory(null);
+                    }}
+                />
+                {stories && <MultipleMarkers stories={stories} onMarkerClick={selectStory} />}
                 {loadingAdventure ? (
                     <div>Loading...</div>
                 ) : (
